@@ -1,31 +1,51 @@
-﻿using Unit2DiceRoller; // granting access to the class for the methods.
+﻿using System;
+using Unit2DiceRoller;
+using static Unit2DiceRoller.RollDice;
 
-Console.WriteLine("Welcome to the Grand Circus Casino!");
-Console.WriteLine("Roll the die and test your luck!");
-
-bool goagain = false; // setting bool value to false for loop
-int roll = 1; // setting the value of the first roll
-do // starting the loop for the dice roll
 {
-    int diceRoll1 = RollDice.DiceRoll(); // Calling the DiceRoll method and generating the first random number and storing the value.
-    int diceRoll2 = RollDice.DiceRoll(); // Calling the DiceRoll method and generating the second random number and storing the value.
-
-    Console.WriteLine("Roll " + roll); // Showing the user what roll they are on.
-    Console.WriteLine($"You rolled a {diceRoll1} and {diceRoll2} ({diceRoll1 + diceRoll2} total)"); // Showing the user what they rolled and what it totaled to. 
-    Console.WriteLine(Unit2DiceRoller.RollDice.DiceCombinations(diceRoll1, diceRoll2)); // Calling the control statements to let the user know what their dice combination means. 
-    roll++; // Increasing the roll value by 1
-    
-
-    Console.WriteLine("Go Again? (y/n)"); // Asking the user if they would like to roll again. 
-    string again = Console.ReadLine(); // Taking the users input
-
-    if (again == "y" || again == "Y") // Control statement the sets the bool value for the loop. 
+    bool keepPlaying = true;
+    while (keepPlaying)
     {
-        goagain = true;
-    }
+        Console.Write("How many sides does each die have? ");
+        int sides = 0;
+        try
+        {
+            sides = int.Parse(Console.ReadLine());
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Invalid input. Please enter a number.");
+            continue;
+        }
+        if (sides < 1)
+        {
+            Console.WriteLine("Invalid input. Please enter a positive number.");
+            continue;
+        }
 
-    else
-    {
-        goagain= false;
+        int die1 = RollDice.DiceRoll(sides);
+        int die2 = RollDice.DiceRoll(sides);
+        Console.WriteLine("Die 1: " + die1);
+        Console.WriteLine("Die 2: " + die2);
+        Console.WriteLine("Total: " + (die1 + die2));
+
+        string combo = RollDice.GetCombo(die1, die2);
+        if (sides == 6 && combo != "")
+        {
+            Console.WriteLine(combo + "!");
+        }
+
+        string total = RollDice.GetTotal(die1, die2);
+        if (sides == 6 && total != "")
+        {
+            Console.WriteLine(total + "!");
+        }
+
+        Console.Write("Roll again? (y/n) ");
+        string answer = Console.ReadLine().ToLower();
+        if (answer != "y" && answer != "yes")
+        {
+            keepPlaying = false;
+        }
     }
-} while (goagain);
+}
